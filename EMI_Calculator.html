@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title> EMI Calculator </title>
+    <style>
+    label, span
+    {
+        font-size: 1.3em;
+    }
+    </style>
+</head>
+<body>
+    <script>
+        function reflect_range_change()
+        {
+            var principle = parseInt(document.getElementById("id_range_principle").value);
+            document.getElementById("id_input_principle").value = principle;
+
+            var rate = parseInt(document.getElementById("id_range_rate").value);
+            document.getElementById("id_input_rate").value = rate;
+
+            var year = parseInt(document.getElementById("id_range_year").value);
+            document.getElementById("id_input_year").value = year;
+
+            calculate_emi(principle, rate, year);
+        }
+        function reflect_input_change()
+        {
+            var principle = parseInt(document.getElementById("id_input_principle").value);
+            document.getElementById("id_range_principle").value = principle;
+
+            var rate = parseInt(document.getElementById("id_input_rate").value);
+            document.getElementById("id_range_rate").value = rate;
+
+            var year = parseInt(document.getElementById("id_input_year").value);
+            document.getElementById("id_range_year").value = year;
+            
+            calculate_emi(principle, rate, year);
+        }
+        function calculate_emi(principle, rate, year)
+        {
+            var rate_per_month = rate / 1200;
+            var months = 12 * year;
+
+            var emi = (principle * rate_per_month * ((1 + rate_per_month) ** months)) / (((1 + rate_per_month) ** months) - 1)
+            var total_amount_after_complete_period = emi * months;
+            var total_interest_after_complete_period = total_amount_after_complete_period - principle;
+            
+            console.log("Principle", typeof(principle), principle);
+            console.log("Rate", typeof(rate), rate);
+            console.log("Year", typeof(year), year);
+            console.log("Rate Per Month", typeof(rate_per_month), rate_per_month);
+            console.log("Months", typeof(months), months);
+            console.log("EMI", emi);
+            console.log();
+
+            display_results(emi, total_interest_after_complete_period, total_amount_after_complete_period);
+        }
+
+        function display_results(emi, total_interest_after_complete_period, total_amount_after_complete_period)
+        {
+            // Displaying emi
+            document.getElementById("id_emi_result").innerHTML = new Intl.NumberFormat("en-in").format(emi);
+
+            // Rounding and displaying emi
+            document.getElementById("id_emi_rounded").innerHTML = new Intl.NumberFormat("en-in").format(Math.round(emi));
+
+            // Displaying interest
+            document.getElementById("id_total_interest").innerHTML = new Intl.NumberFormat("en-in").format(Math.round(total_interest_after_complete_period));
+
+            // Displaying total amount
+            document.getElementById("id_total_amount").innerHTML = new Intl.NumberFormat("en-in").format(Math.round(total_amount_after_complete_period));
+        }
+    </script>
+    <div class="container-fluid">
+        <div class="jumbotron" style="background: linear-gradient(90deg, #00F260, #0575E6);">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1 class="display-1 font-weight-bold d-flex justify-content-center"> EMI Calculator </h1>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2 form-label">
+                    <label for=""> Principle </label>
+                </div>
+                <div class="col-sm-1">
+                    <span>1,000</span>
+                </div>
+                <div class="col-sm-5">
+                    <input class="custom-range" type="range" min="1000" max="100000000000" value="1000" id="id_range_principle" oninput="reflect_range_change()">
+                </div>
+                <div class="col-sm-2">
+                    <span>1,00,00,00,00,000</span>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" id="id_input_principle" value="1000" name="principle" onkeyup="reflect_input_change()">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for=""> Rate </label>
+                </div>
+                <div class="col-sm-1">
+                    <span>1</span>
+                </div>
+                <div class="col-sm-5">
+                    <input class="custom-range" type="range" min="1" max="30" value="1" id="id_range_rate" oninput="reflect_range_change()">
+                </div>
+                <div class="col-sm-2">
+                    <span>30</span>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" id="id_input_rate" name="rate" value="1" onkeyup="reflect_input_change()">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for=""> Year </label>
+                </div>
+                <div class="col-sm-1">
+                    <span>1</span>
+                </div>
+                <div class="col-sm-5">
+                    <input class="custom-range" type="range" min="1" max="50" value="1" id="id_range_year" oninput="reflect_range_change()">
+                </div>
+                <div class="col-sm-2">
+                    <span>50</span>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" type="text" id="id_input_year" value="1" name="year" onkeyup="reflect_input_change()">
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for=""> EMI </label>
+                </div>
+                <div class="col-sm-10"> <span id="id_emi_result"></span> </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for=""> Rounded EMI </label>
+                </div>
+                <div class="col-sm-10"> <span id="id_emi_rounded"></span> </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for=""> Total Interest </label>
+                </div>
+                <div class="col-sm-10"> <span id="id_total_interest"></span> </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for=""> Total Amount </label>
+                </div>
+                <div class="col-sm-10"> <span id="id_total_amount"></span> </div>
+            </div>
+        </div>
+    </div>
+    <script> reflect_input_change(); </script>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
